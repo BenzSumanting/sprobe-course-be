@@ -11,11 +11,11 @@ class Assignment extends Model
 {
     use HasFactory, HasUlid, SoftDeletes;
 
-    protected $fillable = ['name', 'email', 'enrollment_date'];
+    protected $fillable = ['course_id', 'title', 'description', 'due_date'];
 
-    public function courses()
+    public function course()
     {
-        return $this->belongsToMany(Course::class, 'enrollments');
+        return $this->belongsTo(Course::class);
     }
 
     public function submissions()

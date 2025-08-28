@@ -9,15 +9,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Submission extends Model
 {
-   use HasFactory, HasUlid, SoftDeletes;
+    use HasFactory, HasUlid, SoftDeletes;
 
     protected $fillable = ['assignment_id', 'student_id', 'submitted_at', 'grade'];
 
-    public function assignment() {
+    public function assignment()
+    {
         return $this->belongsTo(Assignment::class);
     }
 
-    public function student() {
+    public function student()
+    {
         return $this->belongsTo(Student::class);
     }
 }

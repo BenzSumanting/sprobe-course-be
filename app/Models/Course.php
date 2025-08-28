@@ -11,15 +11,15 @@ class Course extends Model
 {
     use HasFactory, HasUlid, SoftDeletes;
 
-    protected $fillable = ['course_id', 'title', 'description', 'due_date'];
+    protected $fillable = ['title', 'description', 'due_date'];
 
-    public function course()
+    public function students()
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsToMany(Student::class, 'enrollments');
     }
 
-    public function submissions()
+    public function assignments()
     {
-        return $this->hasMany(Submission::class);
+        return $this->hasMany(Assignment::class);
     }
 }
