@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\app\Traits\HasUlid;
-use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasUlid;
+use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
 
-class CustomPersonalAccessToken extends Model
+class CustomPersonalAccessToken extends SanctumPersonalAccessToken
 {
     use HasUlid;
 
@@ -20,5 +20,9 @@ class CustomPersonalAccessToken extends Model
         'abilities',
         'last_used_at',
         'expires_at',
+    ];
+
+    protected $casts = [
+        'abilities' => 'array',
     ];
 }
