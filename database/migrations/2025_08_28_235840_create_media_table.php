@@ -28,5 +28,14 @@ return new class extends Migration
 
             $table->nullableTimestamps();
         });
+
+        Schema::table('media', function (Blueprint $table) {
+            $table->ulid('model_id')->change();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('media');
     }
 };
