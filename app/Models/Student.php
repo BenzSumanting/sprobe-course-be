@@ -6,12 +6,14 @@ use App\Traits\HasUlid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Student extends Model
+class Student extends Model implements HasMedia
 {
-    use HasFactory, HasUlid, SoftDeletes;
+    use HasFactory, HasUlid, SoftDeletes, InteractsWithMedia;
 
-    protected $fillable = ['name', 'email', 'enrollment_date'];
+    protected $fillable = ['name', 'email', 'age'];
 
     public function courses()
     {
@@ -21,5 +23,14 @@ class Student extends Model
     public function submissions()
     {
         return $this->hasMany(Submission::class);
+    }
+
+    protected $appends = [
+        'profile',
+    ];
+
+    public function getProfileAttribute()
+    {
+        return $this->getFirstMediaUrl(collectionName: 'profile');
     }
 }
