@@ -24,6 +24,7 @@ class StudentService
             $student = $this->studentRepo->create($data);
 
             if (request()->has('courses')) {
+                $student->courses()->attach($data['courses']);
             }
 
             if (request()->hasFile('image')) {
@@ -75,6 +76,7 @@ class StudentService
             $student->update($data);
 
             if (request()->has('courses')) {
+                $student->courses()->sync($data['courses']);
             }
 
             if (request()->hasFile('image')) {
