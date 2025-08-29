@@ -15,7 +15,7 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->string('name');
             $table->string('email')->unique();
-            $table->date('enrollment_date')->nullable();
+            $table->integer('age')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
