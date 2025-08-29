@@ -11,7 +11,7 @@ class Course extends Model
 {
     use HasFactory, HasUlid, SoftDeletes;
 
-    protected $fillable = ['title', 'description', 'due_date'];
+    protected $fillable = ['title', 'description', 'credits'];
 
     public function students()
     {
