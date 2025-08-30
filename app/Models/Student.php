@@ -33,4 +33,5 @@ class Student extends Model implements HasMedia
     {
         return $this->getFirstMediaUrl(collectionName: 'profile');
     }
+    
 }

@@ -18,8 +18,16 @@ class Assignment extends Model
         return $this->belongsTo(Course::class);
     }
 
-    public function submissions()
+    // public function submissions()
+    // {
+    //     return $this->hasMany(Submission::class);
+    // }
+
+    public function students()
     {
-        return $this->hasMany(Submission::class);
+        return $this->belongsToMany(Student::class, 'submissions')
+            ->using(Submission::class)
+            ->withPivot(['grade', 'submitted_at'])
+            ->withTimestamps();
     }
 }

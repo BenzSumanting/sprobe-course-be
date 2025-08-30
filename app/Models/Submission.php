@@ -11,6 +11,8 @@ class Submission extends Model
 {
     use HasFactory, HasUlid, SoftDeletes;
 
+    protected $table = 'submissions';
+
     protected $fillable = ['assignment_id', 'student_id', 'submitted_at', 'grade'];
 
     public function assignment()
