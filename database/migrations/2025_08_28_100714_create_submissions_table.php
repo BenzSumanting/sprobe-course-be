@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignUlid('student_id')->references('id')->on('students');
             $table->timestamp('submitted_at')->nullable();
             $table->integer('grade')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
