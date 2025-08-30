@@ -3,9 +3,12 @@
 namespace App\Services;
 
 use App\Http\ApiResponse\ApiResponse;
+use App\Http\Resources\AssignmentResource;
 use App\Http\Resources\StudentResource;
 use App\Repositories\StudentRepository;
 use Illuminate\Support\Facades\DB;
+
+use function Laravel\Prompts\error;
 
 class StudentService
 {
@@ -20,11 +23,18 @@ class StudentService
     public function create(array $data)
     {
         try {
+
             DB::beginTransaction();
             $student = $this->studentRepo->create($data);
 
             if (request()->has('courses')) {
-                $student->courses()->attach($data['courses']);
+                $courses = $data['courses'];
+
+                if (is_array($courses) && count($courses) === 1 && is_string($courses[0])) {
+                    $courses = array_map('trim', explode(',', $courses[0]));
+                }
+
+                $student->courses()->attach($courses);
             }
 
             if (request()->hasFile('image')) {
@@ -32,7 +42,7 @@ class StudentService
             }
 
             DB::commit();
-            return ApiResponse::success(new StudentResource($student), 'Success', 201);
+            return ApiResponse::success(new StudentResource($student->load('courses')), 'Success', 201);
         } catch (\Throwable $th) {
             DB::rollback();
             return ApiResponse::error($th->getMessage());
@@ -43,7 +53,7 @@ class StudentService
     {
         try {
 
-            $student = $this->studentRepo->find($id);
+            $student = $this->studentRepo->find($id, with: ['courses.assignments','submissions']);
 
             return ApiResponse::success(new StudentResource($student));
         } catch (\Throwable $th) {
@@ -56,7 +66,10 @@ class StudentService
     {
         try {
 
-            $students = $this->studentRepo->all();
+            $students = $this->studentRepo->all(
+                sortBy: 'desc',
+                orderBy: 'created_at'
+            );
 
             return ApiResponse::success(StudentResource::collection($students));
         } catch (\Throwable $th) {
@@ -102,6 +115,42 @@ class StudentService
             $student->delete();
 
             return ApiResponse::success();
+        } catch (\Throwable $th) {
+            return ApiResponse::error($th->getMessage());
+        }
+    }
+
+    public function studentAssignments($id)
+    {
+        try {
+            $student = $this->studentRepo->find($id, with: ['courses.assignments']);
+
+            if (!$student) {
+                return ApiResponse::error('Student not found', 404);
+            }
+
+            $assignments = $student->courses->pluck('assignments')->flatten();
+
+            return ApiResponse::success(AssignmentResource::collection($assignments));
+        } catch (\Throwable $th) {
+            return ApiResponse::error($th->getMessage());
+        }
+    }
+
+    public function submitScore(string $id, array $data)
+    {
+        try {
+            $student = $this->studentRepo->find($id);
+
+            $student->submissions()->create([
+                'assignment_id' => $data['assignment_id'],
+                'submitted_at' => $data['submitted_at'],
+                'grade' => $data['grade']
+            ]);
+
+            if (!$student) return ApiResponse::error('Not found', 404);
+
+            return ApiResponse::success($student->refresh());
         } catch (\Throwable $th) {
             return ApiResponse::error($th->getMessage());
         }

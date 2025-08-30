@@ -36,7 +36,7 @@ class CourseService
     {
         try {
 
-            $course = $this->courseRepo->find($id);
+            $course = $this->courseRepo->find($id, with: ['assignments']);
 
             return ApiResponse::success(new CourseResource($course));
         } catch (\Throwable $th) {
