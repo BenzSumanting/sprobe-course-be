@@ -19,6 +19,8 @@ class StudentResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'age' => $this->age,
+            'courses' => CourseResource::collection($this->whenLoaded('courses')),
+            'submissions' => SubmissionResource::collection($this->whenLoaded('submissions')),
             'image' => $this->profile
         ];
     }

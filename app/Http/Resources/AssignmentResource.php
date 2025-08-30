@@ -2,10 +2,11 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CourseResource extends JsonResource
+class AssignmentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,8 +19,9 @@ class CourseResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'credits' => $this->credits,
-            'assignments' => AssignmentResource::collection($this->whenLoaded('assignments'))
+            'due_date' => $this->due_date,
+            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d h:i'),
+            'course' => new CourseResource($this->whenLoaded('course'))
         ];
     }
 }
