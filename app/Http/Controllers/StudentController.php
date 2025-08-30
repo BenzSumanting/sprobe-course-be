@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StudentRequest;
+use App\Http\Requests\StudentScoreRequest;
 use App\Http\Requests\StudentUpdateRequest;
 use App\Services\StudentService;
 
@@ -63,5 +64,15 @@ class StudentController extends Controller
     public function destroy(string $id)
     {
         return $this->studentRepo->delete($id);
+    }
+
+    public function studentAssignment(string $id)
+    {
+        return $this->studentRepo->studentAssignments($id);
+    }
+
+    public function studentScore(string $id, StudentScoreRequest $request)
+    {
+        return $this->studentRepo->submitScore($id, $request->validated());
     }
 }
