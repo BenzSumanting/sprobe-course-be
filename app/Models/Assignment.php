@@ -6,6 +6,7 @@ use App\Traits\HasUlid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 class Assignment extends Model
 {
@@ -29,5 +30,22 @@ class Assignment extends Model
             ->using(Submission::class)
             ->withPivot(['grade', 'submitted_at'])
             ->withTimestamps();
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($assignment) {
+            Cache::forget('assignments_all');
+        });
+
+        static::updated(function ($assignment) {
+            Cache::forget("assignment_{$assignment->id}");
+            Cache::forget('assignments_all');
+        });
+
+        static::deleted(function ($assignment) {
+            Cache::forget("assignment_{$assignment->id}");
+            Cache::forget('assignments_all');
+        });
     }
 }

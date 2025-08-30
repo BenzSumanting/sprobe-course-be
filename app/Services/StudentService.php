@@ -7,14 +7,10 @@ use App\Http\Resources\AssignmentResource;
 use App\Http\Resources\StudentResource;
 use App\Repositories\StudentRepository;
 use Illuminate\Support\Facades\DB;
-
-use function Laravel\Prompts\error;
+use Illuminate\Support\Facades\Cache;
 
 class StudentService
 {
-    /**
-     * Create a new class instance.
-     */
     public function __construct(private StudentRepository $studentRepo)
     {
         //
@@ -23,17 +19,14 @@ class StudentService
     public function create(array $data)
     {
         try {
-
             DB::beginTransaction();
             $student = $this->studentRepo->create($data);
 
             if (request()->has('courses')) {
                 $courses = $data['courses'];
-
                 if (is_array($courses) && count($courses) === 1 && is_string($courses[0])) {
                     $courses = array_map('trim', explode(',', $courses[0]));
                 }
-
                 $student->courses()->attach($courses);
             }
 
@@ -42,6 +35,11 @@ class StudentService
             }
 
             DB::commit();
+
+            // Clear cache after creating
+            Cache::forget("student_{$student->id}");
+            Cache::forget('students_all');
+
             return ApiResponse::success(new StudentResource($student->load('courses')), 'Success', 201);
         } catch (\Throwable $th) {
             DB::rollback();
@@ -52,12 +50,16 @@ class StudentService
     public function student(string $id)
     {
         try {
+            $student = Cache::remember("student_{$id}", now()->addMinutes(10), function () use ($id) {
+                return $this->studentRepo->find($id, with: ['courses.assignments', 'submissions']);
+            });
 
-            $student = $this->studentRepo->find($id, with: ['courses.assignments','submissions']);
+            if (!$student) {
+                return ApiResponse::error('Student not found', 404);
+            }
 
             return ApiResponse::success(new StudentResource($student));
         } catch (\Throwable $th) {
-            DB::rollback();
             return ApiResponse::error($th->getMessage());
         }
     }
@@ -65,11 +67,9 @@ class StudentService
     public function students()
     {
         try {
-
-            $students = $this->studentRepo->all(
-                sortBy: 'desc',
-                orderBy: 'created_at'
-            );
+            $students = Cache::remember('students_all', now()->addMinutes(10), function () {
+                return $this->studentRepo->all(sortBy: 'desc', orderBy: 'created_at');
+            });
 
             return ApiResponse::success(StudentResource::collection($students));
         } catch (\Throwable $th) {
@@ -79,11 +79,9 @@ class StudentService
 
     public function update(string $id, array $data)
     {
-
         try {
             DB::beginTransaction();
             $student = $this->studentRepo->find($id);
-
             if (!$student) return ApiResponse::error('Not found', 404);
 
             $student->update($data);
@@ -98,6 +96,11 @@ class StudentService
             }
 
             DB::commit();
+
+            // Clear cache after updating
+            Cache::forget("student_{$id}");
+            Cache::forget('students_all');
+
             return ApiResponse::success(new StudentResource($student->refresh()), 'Success', 200);
         } catch (\Throwable $th) {
             DB::rollback();
@@ -109,10 +112,13 @@ class StudentService
     {
         try {
             $student = $this->studentRepo->find($id);
-
             if (!$student) return ApiResponse::error('Not found', 404);
 
             $student->delete();
+
+            // Clear cache after deletion
+            Cache::forget("student_{$id}");
+            Cache::forget('students_all');
 
             return ApiResponse::success();
         } catch (\Throwable $th) {
@@ -123,13 +129,10 @@ class StudentService
     public function studentAssignments($id)
     {
         try {
-            $student = $this->studentRepo->find($id, with: ['courses.assignments']);
-
-            if (!$student) {
-                return ApiResponse::error('Student not found', 404);
-            }
-
-            $assignments = $student->courses->pluck('assignments')->flatten();
+            $assignments = Cache::remember("student_{$id}_assignments", now()->addMinutes(10), function () use ($id) {
+                $student = $this->studentRepo->find($id, with: ['courses.assignments']);
+                return $student ? $student->courses->pluck('assignments')->flatten() : collect();
+            });
 
             return ApiResponse::success(AssignmentResource::collection($assignments));
         } catch (\Throwable $th) {
@@ -141,6 +144,7 @@ class StudentService
     {
         try {
             $student = $this->studentRepo->find($id);
+            if (!$student) return ApiResponse::error('Not found', 404);
 
             $student->submissions()->create([
                 'assignment_id' => $data['assignment_id'],
@@ -148,7 +152,8 @@ class StudentService
                 'grade' => $data['grade']
             ]);
 
-            if (!$student) return ApiResponse::error('Not found', 404);
+            // Clear cache after score submission
+            Cache::forget("student_{$id}");
 
             return ApiResponse::success($student->refresh());
         } catch (\Throwable $th) {

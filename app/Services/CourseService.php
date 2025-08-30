@@ -6,6 +6,7 @@ use App\Http\ApiResponse\ApiResponse;
 use App\Http\Resources\CourseResource;
 use App\Repositories\CourseRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class CourseService
 {
@@ -36,7 +37,9 @@ class CourseService
     {
         try {
 
-            $course = $this->courseRepo->find($id, with: ['assignments']);
+            $course = Cache::remember("course_{$id}", now()->addMinutes(10), function () use ($id) {
+                return $this->courseRepo->find($id, with: ['assignments']);
+            });
 
             return ApiResponse::success(new CourseResource($course));
         } catch (\Throwable $th) {
@@ -49,7 +52,9 @@ class CourseService
     {
         try {
 
-            $courses = $this->courseRepo->all();
+            $courses = Cache::remember('courses_all', now()->addMinutes(10), function () {
+                return $this->courseRepo->all(with: ['assignments']);
+            });
 
             return ApiResponse::success(CourseResource::collection($courses));
         } catch (\Throwable $th) {

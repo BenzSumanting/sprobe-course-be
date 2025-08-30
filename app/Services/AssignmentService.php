@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\ApiResponse\ApiResponse;
 use App\Http\Resources\AssignmentResource;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 use App\Repositories\AssignmentRepository;
 
@@ -37,7 +38,10 @@ class AssignmentService
     {
         try {
 
-            $assignment = $this->assignmentRepo->find($id, with: ['course']);
+            $assignment = Cache::remember("assignment_{$id}", now()->addMinutes(10), function () use ($id) {
+                return $this->assignmentRepo->find($id, with: ['course']);
+            });
+
 
             return ApiResponse::success(new AssignmentResource($assignment->load('course')));
         } catch (\Throwable $th) {
@@ -50,9 +54,11 @@ class AssignmentService
     {
         try {
 
-            $assignment = $this->assignmentRepo->all(with: ['course']);
+            $assignments = Cache::remember('assignments_all', now()->addMinutes(10), function () {
+                return $this->assignmentRepo->all(with: ['course']);
+            });
 
-            return ApiResponse::success(AssignmentResource::collection($assignment));
+            return ApiResponse::success(AssignmentResource::collection($assignments));
         } catch (\Throwable $th) {
             DB::rollback();
             return ApiResponse::error($th->getMessage());
