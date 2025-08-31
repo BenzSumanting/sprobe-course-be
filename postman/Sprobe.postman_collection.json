@@ -1,0 +1,734 @@
+{
+	"info": {
+		"_postman_id": "efbdeaa4-6331-4fa8-ba45-3511cd525a62",
+		"name": "Sprobe",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39664919",
+		"_collection_link": "https://lunar-robot-300564.postman.co/workspace/MTech-Labs-Workplace~5b65177b-d64d-4b65-892b-d81b0882d2d1/collection/39664919-efbdeaa4-6331-4fa8-ba45-3511cd525a62?action=share&source=collection_link&creator=39664919"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var accessToken = pm.response.json().data.access_token;\r",
+									"\r",
+									"pm.environment.set('accessToken' , accessToken);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiUrl}}/login",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/logout",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Student",
+			"item": [
+				{
+					"name": "[STORE]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Benz Sumanting",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "sumantingjanez11211912d343333sr1@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "age",
+									"value": "30",
+									"type": "text"
+								},
+								{
+									"key": "courses[]",
+									"value": "01K3TEFCZDNKSEAGRCJCK8W5A3, 01K3TEG8TY9EYMWQ2T3ZX7ZMPB",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Administrator/Desktop/f550b0cc-c989-4feb-9ad2-7e09f68f308f.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}/student",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"student"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[INDEX]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/student",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"student"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[SHOW]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/student/:id",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"student",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "01K3XPRPTEB5ZMQ9XK83C36P6Z"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[UPDATE]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Donavel Oftana",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "donaveloftana97@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "age",
+									"value": "27",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Administrator/Desktop/f550b0cc-c989-4feb-9ad2-7e09f68f308f.jpg"
+								},
+								{
+									"key": "_method",
+									"value": "PUT",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}/student/:id",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"student",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "01K3SN8FYGJRPWMZD4RV9X382P"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[DELETE]",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/student/:id",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"student",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "01K3SNRK7CZ2ZP6EYZ6KM42ZD0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Student Assignment",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/student/:id/assignment",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"student",
+								":id",
+								"assignment"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "01K3YRZ89DKEK8133YVMD8CHNH"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Student Score",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignment_id",
+									"value": "01K3WFXM41Y9QD0CBEHACHYQXG",
+									"type": "text"
+								},
+								{
+									"key": "submitted_at",
+									"value": "2025-08-30",
+									"type": "text"
+								},
+								{
+									"key": "grade",
+									"value": "100",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}/student/:id/score",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"student",
+								":id",
+								"score"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "01K3TGPE4TZNAR3Z9EWYAMXNZ3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Courses",
+			"item": [
+				{
+					"name": "[STORE]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "HRM",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "For Hotel and Restaurant Management",
+									"type": "text"
+								},
+								{
+									"key": "credits",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}/course",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"course"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[INDEX]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/course",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"course"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[SHOW]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/course/:id",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"course",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "01K3YRZ89QSJ5DHF712N7KTQCD"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[UPDATE]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Midwifery",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Midwife",
+									"type": "text"
+								},
+								{
+									"key": "credits",
+									"value": "30",
+									"type": "text"
+								},
+								{
+									"key": "_method",
+									"value": "PUT",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}/course/:id",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"course",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "01K3WJX4Y1F195YHRBE85DTC57"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Assignment",
+			"item": [
+				{
+					"name": "[STORE]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "course_id",
+									"value": "01K3YRZ89QSJ5DHF712N7KTQCD",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "This is for the Quizz",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "This is the final grading",
+									"type": "text"
+								},
+								{
+									"key": "due_date",
+									"value": "2025-01-01",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}/assignment",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"assignment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[INDEX]",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}/assignment",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"assignment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[DELETE]",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/delete",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[SHOW]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}/assignment/:id",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"assignment",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "01K3Z85EEYCFNC3SH5AVQJ9VHT"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[UPDATE]",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "course_id",
+									"value": "01K3Z85EDSK90NBTES04DHAVQV",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "dfsdfs",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "werwerwerw",
+									"type": "text"
+								},
+								{
+									"key": "due_date",
+									"value": "2025-03-23",
+									"type": "text"
+								},
+								{
+									"key": "_method",
+									"value": "PUT",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}/assignment/:id",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"assignment",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "01K3Z85EEYCFNC3SH5AVQJ9VHT"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
