@@ -36,7 +36,6 @@ class StudentService
 
             DB::commit();
 
-            // Clear cache after creating
             Cache::forget("student_{$student->id}");
             Cache::forget('students_all');
 
@@ -129,16 +128,20 @@ class StudentService
     public function studentAssignments($id)
     {
         try {
-            $assignments = Cache::remember("student_{$id}_assignments", now()->addMinutes(10), function () use ($id) {
-                $student = $this->studentRepo->find($id, with: ['courses.assignments']);
-                return $student ? $student->courses->pluck('assignments')->flatten() : collect();
-            });
+            $student = $this->studentRepo->find($id, with: ['courses.assignments']);
+
+            if (!$student) {
+                return ApiResponse::error('Student not found', 404);
+            }
+
+            $assignments = $student->courses->pluck('assignments')->flatten();
 
             return ApiResponse::success(AssignmentResource::collection($assignments));
         } catch (\Throwable $th) {
             return ApiResponse::error($th->getMessage());
         }
     }
+
 
     public function submitScore(string $id, array $data)
     {

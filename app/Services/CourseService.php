@@ -53,7 +53,7 @@ class CourseService
         try {
 
             $courses = Cache::remember('courses_all', now()->addMinutes(10), function () {
-                return $this->courseRepo->all(with: ['assignments']);
+                return $this->courseRepo->all(with: ['assignments'], sortBy: 'desc', orderBy: 'created_at');
             });
 
             return ApiResponse::success(CourseResource::collection($courses));
