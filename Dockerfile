@@ -1,42 +1,29 @@
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 
+# Set working directory
 WORKDIR /var/www
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    zip \
-    unzip \
     libonig-dev \
     libxml2-dev \
-    libzip-dev \
-    libmagickwand-dev \
-    imagemagick \
-    --no-install-recommends && \
-    pecl install imagick && \
-    docker-php-ext-enable imagick
+    zip \
+    unzip \
+    default-mysql-client \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath zip gd
-
-RUN echo "upload_max_filesize=20M" > /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "post_max_size=20M" >> /usr/local/etc/php/conf.d/uploads.ini
-
-
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
+# Copy existing application directory contents
 COPY . /var/www
 
-RUN mkdir -p storage/logs bootstrap/cache \
-    && touch storage/logs/laravel.log \
-    && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-
+# Set permissions
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 755 /var/www
 
 EXPOSE 9000
-
 CMD ["php-fpm"]
