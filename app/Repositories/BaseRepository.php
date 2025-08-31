@@ -45,6 +45,13 @@ abstract class BaseRepository
             }
         }
 
+        if (!empty($prioritize)) {
+            $ids = implode(',', array_map(fn($id) => "'$id'", $prioritize));
+            $query->orderByRaw("FIELD(id, $ids) DESC");
+        } else {
+            $query->orderBy($orderBy, $sortBy);
+        }
+
         if (!empty($allowedFilters)) {
             $query->allowedFilters($allowedFilters);
         }
