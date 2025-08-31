@@ -23,6 +23,18 @@ DB_USERNAME=course
 
 DB_PASSWORD=course
 
+## APP CREDENTIALS
+
+Username: admin@gmail.com
+
+Password: password
+
+
+Username: admin1@gmail.com
+
+Password: password
+
+
 ## POSTMAN
 
 sprobe-course-be/postman
