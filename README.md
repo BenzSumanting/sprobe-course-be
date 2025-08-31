@@ -26,3 +26,8 @@ DB_PASSWORD=course
 ## POSTMAN
 
 sprobe-course-be/postman
+
+## ERD
+
+sprobe-course-be/flowchart
+
