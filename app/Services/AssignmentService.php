@@ -42,8 +42,7 @@ class AssignmentService
                 return $this->assignmentRepo->find($id, with: ['course']);
             });
 
-
-            return ApiResponse::success(new AssignmentResource($assignment->load('course')));
+            return ApiResponse::success(new AssignmentResource($assignment));
         } catch (\Throwable $th) {
             DB::rollback();
             return ApiResponse::error($th->getMessage());
