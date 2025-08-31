@@ -19,11 +19,6 @@ class Assignment extends Model
         return $this->belongsTo(Course::class);
     }
 
-    // public function submissions()
-    // {
-    //     return $this->hasMany(Submission::class);
-    // }
-
     public function students()
     {
         return $this->belongsToMany(Student::class, 'submissions')
@@ -36,16 +31,25 @@ class Assignment extends Model
     {
         static::created(function ($assignment) {
             Cache::forget('assignments_all');
+
+            Cache::forget("course_{$assignment->course_id}");
+            Cache::forget("courses_all");
         });
 
         static::updated(function ($assignment) {
             Cache::forget("assignment_{$assignment->id}");
             Cache::forget('assignments_all');
+
+            Cache::forget("course_{$assignment->course_id}");
+            Cache::forget("courses_all");
         });
 
         static::deleted(function ($assignment) {
             Cache::forget("assignment_{$assignment->id}");
             Cache::forget('assignments_all');
+
+            Cache::forget("course_{$assignment->course_id}");
+            Cache::forget("courses_all");
         });
     }
 }
